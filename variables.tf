@@ -1,65 +1,60 @@
-variable "resource_prefix" {
-  description = "Prefix for resource names"
+# variable "rg_name" {
+#   description = "Azure resource group name"
+#   type        = string
+#   default     = "newrg"
+# }
+
+variable "location" {
+  description = "Azure region for resources"
   type        = string
-  default     = "docsumm"
+  default     = "uksouth"
+}
+
+variable "resource_prefix" {
+  description = "Prefix for all resource names"
+  type        = string
+  default     = "home"
+}
+
+variable "abbr_location" {
+  description = "Abbreviated location code (auto-derived from location)"
+  type        = string
+  default     = ""
 }
 
 variable "environment" {
   description = "Environment name"
   type        = string
   default     = "dev"
-  
-  validation {
-    condition     = contains(["dev", "staging", "prod"], var.environment)
-    error_message = "Environment must be dev, staging, or prod."
-  }
 }
 
-variable "location" {
-  description = "Azure region for resources"
+variable "project" {
+  description = "Project name"
   type        = string
-  default     = "eastus"
+  default     = "terraform"
 }
 
-variable "openai_location" {
-  description = "Azure region for OpenAI (limited availability)"
+variable "repo" {
+  description = "Repository name"
   type        = string
-  default     = "eastus"
+  default     = "Terraform"
 }
 
-variable "app_service_plan_sku_name" {
-  description = "App Service Plan SKU"
-  type        = string
-  default     = "B2"
+variable "resource_groups" {
+  description = "Map of resource groups to create"
+  type = map(object({
+    location = optional(string)
+  }))
+  default = {}
 }
 
-variable "openai_sku_name" {
-  description = "Azure OpenAI SKU name"
-  type        = string
-  default     = "S0"
-}
-
-variable "sql_admin_username" {
-  description = "SQL Server admin username"
-  type        = string
-  default     = "sqladmin"
-  sensitive   = true
-}
-
-variable "key_vault_access_object_ids" {
-  description = "Azure AD object IDs with Key Vault access"
-  type        = list(string)
-  default     = []
-}
-
-variable "enable_https_only" {
-  description = "Enable HTTPS only for storage account"
-  type        = bool
-  default     = true
-}
-
-variable "storage_replication_type" {
-  description = "Storage account replication type"
-  type        = string
-  default     = "GRS"
+variable "vnets" {
+  description = "Map of VNets to create"
+  type = map(object({
+    resource_group = string
+    location       = optional(string)
+    address_space  = string
+    subnets        = map(string)
+  }))
+  default = {}
 }
